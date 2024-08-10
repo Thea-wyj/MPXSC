@@ -10,20 +10,20 @@ import matplotlib.pyplot as plt
 
 
 class AtariAgent:
-    def __init__(self, action_space: np.array, memory_par: tuple, game: tuple, reward_clip: bool):
-        """
-        This is an general gym-atari agent.
-        In this class, some common RL parameters and the whole RL frame have been defined.
-        For special algorithm agent, initialization and some functions should be redefined.
-        The functions are as follow: load_model, get_action, learn and process_results.
-        Other functions also could be redefined for special requirements.
+    """
+    A general gym-atari agent that can be combined with special algorithms.
+    This class defines common RL parameters and the overall RL framework.
+    For special algorithm agents, initialization and some functions should be redefined.
+    The functions to be redefined are: load_model, get_action, learn, and process_results.
+    Other functions can also be redefined for special requirements.
 
-        Args:
-            action_space: An array contains all actions.
-            memory_par: Including the size of the memory space and multi-frames image size.
-            game: Including the game name and the gym environment.
-            reward_clip: Clip reward in [-1, 1] range if True.
-        """
+    Args:
+        action_space: An array containing all actions.
+        memory_par: A tuple including the size of the memory space and multi-frames image size.
+        game: A tuple including the game name and the gym environment.
+        reward_clip: Clip reward in [-1, 1] range if True.
+    """
+    def __init__(self, action_space: np.array, memory_par: tuple, game: tuple, reward_clip: bool):
         self.game_name, self.environment, self.live_penalty_mode = game
         self.reward_clip = reward_clip
         self.gamma = 0.99
@@ -58,13 +58,13 @@ class AtariAgent:
 
     def preprocess_observation(self, observation: np.array) -> torch.Tensor:
         """
-        Transform rgb observation image to a smaller gray image.
+        Transform RGB observation image to a smaller gray image.
 
         Args:
             observation: The image data.
 
         Returns:
-            tensor_observation: A sequence represents a gray image.
+            tensor_observation: A sequence representing a gray image.
         """
         image = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY)
         image = cv2.resize(image, self.single_img_size[1:], interpolation=cv2.INTER_AREA)
@@ -73,13 +73,13 @@ class AtariAgent:
 
     def reset_episode(self, environment):
         """
-        Rest the environment at the begging of a episode.
+        Reset the environment at the beginning of an episode.
 
         Args:
             environment: The gym atari game environment.
 
         Returns:
-            The bool represents whether the episode has done, 0 represents the score.
+            A tuple containing whether the episode is done, the score, multi-frames, and the observation.
         """
         observation = self.preprocess_observation(environment.reset())
         if self.live_penalty_mode:
@@ -97,13 +97,13 @@ class AtariAgent:
 
     def update_multi_frames(self, observation_: torch.Tensor) -> torch.Tensor:
         """
-        Add new observation into the multi frames space and delete the oldest one.
+        Add new observation into the multi-frames space and delete the oldest one.
 
         Args:
-            observation_: The new observation getting through current action.
+            observation_: The new observation obtained through the current action.
 
         Returns:
-            multi_frames_: The new multi frames space.
+            multi_frames_: The updated multi-frames space.
         """
         multi_frames_ = self.multi_frames.clone().detach()
         for i in range(self.frames_num - 1):
@@ -113,50 +113,50 @@ class AtariAgent:
 
     def sample(self):
         """
-        Sample batch size memory(sars_t) from memory space.
+        Sample a batch of memory (sars_t) from the memory space.
         """
         return self.memory.sample(self.batch_size)
 
     def load_model(self, net_path: str, eval: bool, start_episodes: int):
         """
-        Load saved model according different algorithm.
+        Load a saved model according to the specific algorithm.
 
         Args:
-            net_path: The path that contains all of models.
-            eval: True represents evaluate only.
-            start_episodes: The num of the start episode.
+            net_path: The path that contains all models.
+            eval: True if in evaluation mode.
+            start_episodes: The number of the start episode.
         """
         pass
 
     def get_action(self, s: torch.Tensor, eval=False) -> int:
         """
-        Get action through special algorithm.
+        Get action through a specific algorithm.
 
         Args:
-            eval: True represents evaluate mode.
-            s: The sequence contains the state of the environment.
+            eval: True if in evaluation mode.
+            s: The sequence containing the state of the environment.
 
         Returns:
-            The action generated bt the algorithm under certain state.
+            The action generated by the algorithm under a certain state.
         """
         pass
 
     def learn(self):
         """
-        Update the whole algorithm under certain cases.
+        Update the whole algorithm under certain conditions.
         """
         pass
 
     def soft_update_target(self, target_model, behavior_model):
         """
-        Update target network softly.
+        Softly update the target network.
         """
         for target_param, local_param in zip(target_model.parameters(), behavior_model.parameters()):
             target_param.data.copy_(self.tau * local_param.data + (1.0 - self.tau) * target_param.data)
 
     def save_memory(self, r, action, multi_frames_, done):
         """
-        Save episodes experience into memory space.
+        Save episode experience into memory space.
         """
         if self.reward_clip:
             r = min(max(r, -self.step_num), self.step_num)
@@ -168,7 +168,14 @@ class AtariAgent:
 
     def go_steps(self, multi_frames_: torch.Tensor, action: int):
         """
-        Go several steps under a certain action.
+        Take several steps under a certain action.
+
+        Args:
+            multi_frames_: The current multi-frames.
+            action: The action to take.
+
+        Returns:
+            A tuple containing the updated multi-frames, step rewards, done flag, and observation.
         """
         step_rewards, done, observation_ = 0, None, None
         for _ in range(self.step_num):
@@ -190,14 +197,14 @@ class AtariAgent:
 
     def simulate(self, net_path=None, start_episodes=0, eval=False, start_frames=0):
         """
-        This is the general RL frame, including the whole process.
-        Through 'eval' parameter, we can switch mode between training and evaluation.
+        This is the general RL framework, including the whole process.
+        Through the 'eval' parameter, we can switch between training and evaluation modes.
 
         Args:
-            net_path: The path include model or data files.
-            start_episodes: The num represents the start episode, using in refresher training.
-            eval: True represents evaluate only.
-            start_frames: The num of the start frames.
+            net_path: The path including model or data files.
+            start_episodes: The number representing the start episode, used in refresher training.
+            eval: True if in evaluation mode.
+            start_frames: The number of the start frames.
         """
         self.frames_count = start_frames
         self.load_model(net_path, eval, start_episodes)
@@ -235,16 +242,16 @@ class AtariAgent:
                 self.max_obs_list = obs_list[200:600]
         # self.explain_by_ig()
         # self.explain_by_lime()
-        print('length',len(self.max_input_list))
+        print('length', len(self.max_input_list))
         self.explain_by_goh()
         self.explain_by_sarfa()
-        self.explain_by_mfpp_sarfa()
+        self.explain_by_mpx()
         # self.global_explain_2()
 
     def process_results(self, episode: int, eval=False):
         print(self)
         """
-        Process result in certain episodes, saving model, plotting results and so on.
+        Process results in certain episodes, saving model, plotting results, and so on.
         """
         pass
 

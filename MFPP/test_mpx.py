@@ -106,7 +106,7 @@ def preprocess_frame(frame, size=(84, 84)):
     return frame[:, :, None]
 
 
-def mfpp_sarfa(model,
+def mpx(model,
                input, # 1 210 160 3
                img_file, # 1 4 84 84
                target=None,

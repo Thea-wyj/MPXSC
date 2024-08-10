@@ -7,7 +7,7 @@ from torch.nn import CosineSimilarity
 
 from GohTest.saliency import goh
 from MFPP.test import mfpp
-from MFPP.test_sarfa import mfpp_sarfa
+from MFPP.test_mpx import mpx
 from sarfa.sarfa_saliency import sarfa
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -104,11 +104,11 @@ def get_validity(attribution, threshold, model, input, pred, score):
 
 
 def mfpp_explain_fn(image, model=None, img_file=None, target=0):
-    return (mfpp_sarfa(model, image, img_file, target),)
+    return (mfpp(model, image, img_file, target),)
 
 
-def mfpp_sarfa_explain_fn(image, model=None, img_file=None, target=0):
-    return (mfpp_sarfa(model, img_file, image, target),)
+def mpx_explain_fn(image, model=None, img_file=None, target=0):
+    return (mpx(model, img_file, image, target),)
 
 
 def goh_explain_fn(image, model=None, img_file=None):

@@ -1,5 +1,5 @@
 """
-This is a file includes the main function for gym atari reinforcement learning.
+This file includes the main function for gym atari reinforcement learning.
 """
 import os
 import gym
@@ -10,6 +10,7 @@ from argparse_decorate import init_parser, add_arg
 from deepQLearning.deep_q_learning import DQLAtari
 from discreteSoftActorCirtics.sac_discrete import SoftActorCriticsDiscrete
 
+# Start a virtual framebuffer for rendering
 os.system('Xvfb :97 -screen 0 640x480x24 &')
 
 
@@ -30,21 +31,31 @@ def main(**kwargs):
     """
     The main function for gym atari reinforcement learning.
     """
+    # List of Atari games and their corresponding action sets
     atari_game = ['BreakoutNoFrameskip-v4', 'MsPacmanNoFrameskip-v4', 'PongNoFrameskip-v4']
     atari_game_action = [['NOOP', 'FIRE', 'RIGHT', 'LEFT'],
-                         ['NOOP', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT'], ['NOOP', 'FIRE', 'RIGHT', 'LEFT', 'RIGHTFIRE', 'LEFTFIRE']]
+                         ['NOOP', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT'],
+                         ['NOOP', 'FIRE', 'RIGHT', 'LEFT', 'RIGHTFIRE', 'LEFTFIRE']]
+
+    # Determine the environment name based on the game index or provided name
     env_name = kwargs['env_name'] if kwargs['env_name'] is not None else atari_game[kwargs['game_index']]
     action_name_list = atari_game_action[kwargs['game_index']]
+
+    # Create directory for the environment if it does not exist
     dirs = './' + env_name
     if not os.path.exists(dirs):
         os.makedirs(dirs)
 
+    # Set image size and create the gym environment
     img_size = (4, 84, 84)
     env = gym.make(env_name)
+
+    # Define memory parameters and action space
     memory_par = (kwargs['memory_size'], img_size)
     action_space = np.array([i for i in range(env.action_space.n)], dtype=np.uint8)
     game = (env_name, env, kwargs['live_penalty'])
 
+    # Initialize the agent based on the specified type
     if kwargs['agent'] == 'dql':
         agent = DQLAtari(memory_par=memory_par,
                          action_space=action_space,
@@ -60,6 +71,7 @@ def main(**kwargs):
     else:
         raise Exception('The agent does not exist.')
 
+    # Start the simulation
     agent.simulate(net_path=dirs, start_episodes=kwargs['start_episode'], eval=kwargs['eval'], start_frames=0)
 
 
