@@ -8,6 +8,12 @@ As a branch of explainable artificial intelligence, explainable deep reinforceme
 
 ## System Requirements
 
+- Device：`Legion Y7000P2020H, Windows 11 Enterprise Edition`
+
+- CPU: `Intel(R) Core(TM) i7-10875H CPU @ 2.30GHz 2.30 GHz`
+
+- GPU: `NVIDIA GeForce RTX 2060`
+
 - Python installed (preferably Python 3.9)
 
 - Relevant libraries and dependencies for the program are installed
@@ -41,7 +47,9 @@ python main.py --agent=dql --eval=True --game_index=1
 
 ## Example Result
 
-### Local decision explanation
+### Local decision explanation 
+
+
 
 ![image-20240810043617394](./result/Local.png)
 

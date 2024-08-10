@@ -213,7 +213,7 @@ class DQLAtari(AtariAgent):
 
     def explain_by_mpx(self):
         """
-        Explain the model's decisions using MFPP-SARFA.
+        Explain the model's decisions using mpx （Local explanation in Chapter 3.2）
         """
         self.infidelities = []
         self.sensitivities = []
@@ -375,7 +375,7 @@ class DQLAtari(AtariAgent):
 
     def global_explain_2(self):
         """
-        Categorize heatmaps by action and original image, and perform clustering using DBSCAN.
+        Categorize heatmaps by action and original image, and perform clustering using DBSCAN. （Global explanation in Chapter 3.3）
         """
         # Initialize lists to store attributions, observations, outputs, and actions for each action
         action_attr_list = [[] for _ in range(len(self.action_name_list))]
@@ -462,7 +462,7 @@ class DQLAtari(AtariAgent):
 
     def evaluate_attribution(self, anti_attribution_list, sensitivity_process_list):
         """
-        Evaluate the attributions by calculating various metrics such as infidelity, sensitivity, stability, validity, and sufficiency.
+        Evaluate the attributions by calculating various metrics such as infidelity, sensitivity, stability, validity, and sufficiency. in Chapter 4.1
 
         Args:
             anti_attribution_list: List of anti-attributions for sensitivity calculation.
