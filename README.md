@@ -1,4 +1,4 @@
-# MPX
+# MPXSC
 
 > Codes for “The Multi-granularity Policy Explanation of Deep Reinforcement Learning Based on Saliency Map Clustering”
 
@@ -27,9 +27,9 @@ As a branch of explainable artificial intelligence, explainable deep reinforceme
 To execute the program, use the following command in your terminal:
 
 ```shell
-#Play Breakout and explain by Goh、Sarfa and MPX
+#Play Breakout and explain by Goh、Sarfa and MPXSC
 python main.py --agent=dql --eval=True --game_index=0
-#Play MsPacman and explain by Goh、Sarfa and MPX
+#Play MsPacman and explain by Goh、Sarfa and MPXSC
 python main.py --agent=dql --eval=True --game_index=1
 ```
 
